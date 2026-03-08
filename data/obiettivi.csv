@@ -1,0 +1,4 @@
+# questo file mi serve per contenere i dati obiettivi in formato csv separato da ;
+ID;Nome;Descrizione;Tipologia;Durata;Disponibile
+1;Respiro Mattina;Meditazione guidata mattutina;Giornaliero;15;SI
+2;Focus Sera;Meditazione per concentrazione serale;Mensile;30;SI

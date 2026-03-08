@@ -1,0 +1,8 @@
+# questo file mi serve per evitare di versionare file compilati, output di build e file temporanei
+/target/
+*.class
+*.jar
+*.log
+.DS_Store
+.idea/
+.vscode/

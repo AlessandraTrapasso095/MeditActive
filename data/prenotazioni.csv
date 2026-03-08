@@ -1,0 +1,2 @@
+# questo file mi serve per contenere le prenotazioni obiettivi in formato csv separato da ;
+ID;IDObiettivo;IDUtente;DataInizio;DataFine
