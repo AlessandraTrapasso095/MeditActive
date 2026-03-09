@@ -20,7 +20,7 @@ I dati iniziali vengono caricati da file CSV all'avvio e vengono mantenuti sincr
 ## Setup locale
 1. Clona la repository:
 ```bash
-git clone <URL_REPOSITORY>
+git clone https://github.com/AlessandraTrapasso095/MeditActive.git
 cd MeditActive
 ```
 
