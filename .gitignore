@@ -1,5 +1,6 @@
 # questo file mi serve per evitare di versionare file compilati, output di build e file temporanei
 /target/
+/exports/
 *.class
 *.jar
 *.log

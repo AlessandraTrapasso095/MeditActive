@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 public enum MenuCommand {
     SHOW_GOALS(1, "Visualizzare tutti gli obiettivi all interno del sistema"),
-    BOOK_GOAL(2, "Decidere un obiettivo esistente"),
-    CANCEL_BOOKING(3, "Rimuovere un obiettivo"),
+    BOOK_GOAL(2, "Impostare un obiettivo esistente"),
+    CANCEL_BOOKING(3, "Disdire la prenotazione di un obiettivo"),
     ADD_USER(4, "Aggiungere nuovo utente"),
     EXPORT_AVAILABLE_GOALS(5, "Esportare un file con gli obiettivi disponibili"),
     EXIT(0, "Uscire dal programma");

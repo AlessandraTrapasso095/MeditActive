@@ -8,6 +8,7 @@ import com.meditactive.model.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
@@ -36,6 +37,13 @@ public class DataStore {
     public Collection<Goal> goals() {
         // mi serve per restituire una copia dei dati obiettivi evitando modifiche esterne dirette alla mappa interna.
         return new ArrayList<>(goalsById.values());
+    }
+
+    public List<Goal> availableGoals() {
+        // mi serve per filtrare e restituire solo gli obiettivi con disponibilita attiva.
+        return goalsById.values().stream()
+                .filter(Goal::disponibile)
+                .toList();
     }
 
     public Collection<Booking> bookings() {
@@ -81,6 +89,67 @@ public class DataStore {
     public int nextBookingId() {
         // mi serve per calcolare il prossimo id prenotazione senza duplicare logica in altre classi.
         return bookingsById.keySet().stream().max(Integer::compareTo).orElse(0) + 1;
+    }
+
+    public void addBooking(Booking booking) {
+        // mi serve per impedire inserimenti null e mantenere coerente lo stato in memoria.
+        if (booking == null) {
+            throw new IllegalArgumentException("Prenotazione non valida: valore nullo");
+        }
+
+        // mi serve per evitare duplicazione di id prenotazione durante nuove assegnazioni.
+        if (bookingsById.containsKey(booking.id())) {
+            throw new IllegalArgumentException("Prenotazione non valida: id gia presente " + booking.id());
+        }
+
+        // mi serve per salvare la nuova prenotazione indicizzata per id.
+        bookingsById.put(booking.id(), booking);
+    }
+
+    public Booking removeBookingById(int bookingId) {
+        // mi serve per cancellare la prenotazione selezionata e ottenere i suoi dati per i passaggi successivi.
+        return bookingsById.remove(bookingId);
+    }
+
+    public void addUser(User user) {
+        // mi serve per impedire inserimenti null e mantenere coerente lo stato utenti in memoria.
+        if (user == null) {
+            throw new IllegalArgumentException("Utente non valido: valore nullo");
+        }
+
+        // mi serve per evitare duplicazione di id utente durante nuove registrazioni.
+        if (usersById.containsKey(user.id())) {
+            throw new IllegalArgumentException("Utente non valido: id gia presente " + user.id());
+        }
+
+        // mi serve per salvare il nuovo utente indicizzato per id.
+        usersById.put(user.id(), user);
+    }
+
+    public boolean hasUserWithDocumentId(String documentId) {
+        // mi serve per normalizzare il documento e confrontarlo in modo robusto con i dati esistenti.
+        String normalizedDocumentId = documentId == null ? "" : documentId.trim();
+
+        // mi serve per evitare controlli inutili quando il valore documento e vuoto.
+        if (normalizedDocumentId.isEmpty()) {
+            return false;
+        }
+
+        // mi serve per verificare se esiste gia un utente con lo stesso documento id.
+        return usersById.values().stream()
+                .map(User::documentoId)
+                .anyMatch(existingDocument -> existingDocument.equalsIgnoreCase(normalizedDocumentId));
+    }
+
+    public void setGoalAvailability(int goalId, boolean newAvailability) {
+        // mi serve per recuperare l obiettivo da aggiornare e validare che esista davvero in memoria.
+        Goal currentGoal = goalsById.get(goalId);
+        if (currentGoal == null) {
+            throw new IllegalArgumentException("Obiettivo non trovato con id " + goalId);
+        }
+
+        // mi serve per aggiornare lo stato disponibile dell obiettivo mantenendo l immutabilita del record.
+        goalsById.put(goalId, currentGoal.withDisponibile(newAvailability));
     }
 
     private static <T> Map<Integer, T> indexById(Collection<T> source, ToIntFunction<T> idExtractor) {
