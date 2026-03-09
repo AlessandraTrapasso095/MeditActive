@@ -1,4 +1,4 @@
-/* questo file mi serve per centralizzare i percorsi dei file csv e riusarli senza duplicazioni */
+/* percorsi dei file csv  */
 package com.meditactive.config;
 
 public final class AppPaths {
@@ -8,7 +8,7 @@ public final class AppPaths {
     public static final String BOOKINGS_CSV = "data/prenotazioni.csv";
 
     private AppPaths() {
-        // mi serve per impedire la creazione di oggetti AppPaths perche uso solo costanti statiche.
+        // mi serve per impedire la creazione di oggetti AppPaths 
         throw new IllegalStateException("Classe di utility non istanziabile");
     }
 }

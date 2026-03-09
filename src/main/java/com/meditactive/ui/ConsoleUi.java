@@ -1,4 +1,4 @@
-/* questo file mi serve per centralizzare la stampa della UI console in modo pulito e riusabile */
+/* serve per centralizzare la stampa della UI console */
 package com.meditactive.ui;
 
 import com.meditactive.model.Booking;
@@ -21,7 +21,7 @@ public class ConsoleUi {
     private static final String[] GOAL_HEADERS = {"ID", "Nome", "Descrizione", "Tipologia", "Durata", "Disponibile"};
 
     public void printWelcome() {
-        // mi serve per mostrare un header iniziale con look piu professionale in console.
+        // mi serve per mostrare un header iniziale in console
         System.out.println(BOLD + CYAN + "============================================================" + RESET);
         System.out.println(BOLD + CYAN + "                     MEDITACTIVE CLI                        " + RESET);
         System.out.println(BOLD + CYAN + "============================================================" + RESET);
@@ -30,7 +30,7 @@ public class ConsoleUi {
     }
 
     public void printStartupSummary(DataStore dataStore) {
-        // mi serve per confermare all utente che i csv sono stati caricati in memoria correttamente.
+        // mi serve per confermare all'utente che i csv sono stati caricati in memoria correttamente
         System.out.println(BOLD + GREEN + "Caricamento completato:" + RESET);
         System.out.println("- Utenti caricati: " + dataStore.usersCount());
         System.out.println("- Obiettivi caricati: " + dataStore.goalsCount());
@@ -39,44 +39,44 @@ public class ConsoleUi {
     }
 
     public void printMenu() {
-        // mi serve per stampare il menu comandi da mostrare in ogni ciclo dell applicazione in modo DRY.
+        // mi serve per stampare il menu comandi da mostrare in ogni ciclo dell'applicazione
         System.out.println(BOLD + "Comandi disponibili" + RESET);
         for (MenuCommand command : MenuCommand.values()) {
-            // mi serve per stampare in riga unica codice e descrizione di ogni comando disponibile.
+            // mi serve per stampare in riga unica codice e descrizione di ogni comando disponibile
             System.out.println(command.code() + " - " + command.description());
         }
         System.out.println();
     }
 
     public void printCommandPending(MenuCommand command, DataStore dataStore) {
-        // mi serve per notificare all utente che il comando scelto verra implementato nello step dedicato successivo.
+        // mi serve per notificare all'utente che il comando scelto verra implementato nello step dedicato successivo
         System.out.println("Hai scelto il comando " + command.code() + ": " + command.description() + ".");
         System.out.println("Questo comando verra implementato nel prossimo step.");
 
-        // mi serve per mostrare che i dati in memoria restano disponibili durante il loop menu.
+        // mi serve per mostrare che i dati in memoria restano disponibili durante il loop menu
         System.out.println("Stato corrente -> utenti: " + dataStore.usersCount() + ", obiettivi: " + dataStore.goalsCount() + ", prenotazioni: " + dataStore.bookingsCount());
     }
 
     public void printGoalsTable(Collection<Goal> goals) {
-        // mi serve per ordinare gli obiettivi per id e avere sempre una vista coerente.
+        // mi serve per ordinare gli obiettivi per id 
         List<Goal> sortedGoals = goals.stream().sorted(Comparator.comparingInt(Goal::id)).toList();
 
-        // mi serve per informare l utente quando non ci sono obiettivi disponibili in memoria.
+        // mi serve per informare l'utente quando non ci sono obiettivi disponibili in memoria
         if (sortedGoals.isEmpty()) {
             System.out.println("Nessun obiettivo presente nel sistema.");
             return;
         }
 
-        // mi serve per mostrare il titolo della sezione obiettivi con stile coerente col resto della ui.
+        // mi serve per mostrare il titolo della sezione obiettivi con stile coerente col resto della ui
         System.out.println(BOLD + CYAN + "Elenco obiettivi nel sistema" + RESET);
 
-        // mi serve per calcolare una sola volta il separatore tabellare e riusarlo in tutti i punti necessari.
+        // mi serve per calcolare il separatore tabellare 
         String separator = buildSeparator(GOAL_COLUMN_WIDTHS);
         System.out.println(separator);
         System.out.println(buildRow(GOAL_HEADERS, GOAL_COLUMN_WIDTHS));
         System.out.println(separator);
 
-        // mi serve per stampare ogni obiettivo su una riga tabellare con i campi richiesti dalla traccia.
+        // mi serve per stampare ogni obiettivo su una riga tabellare con i campi richiesti dalla traccia
         for (Goal goal : sortedGoals) {
             String[] rowValues = {
                     String.valueOf(goal.id()),
@@ -89,33 +89,33 @@ public class ConsoleUi {
             System.out.println(buildRow(rowValues, GOAL_COLUMN_WIDTHS));
         }
 
-        // mi serve per chiudere la tabella con la stessa linea separatrice.
+        // mi serve per chiudere la tabella con la stessa linea separatrice
         System.out.println(separator);
     }
 
     public void printBookGoalHeader() {
-        // mi serve per aprire la sezione del comando 2 con contesto chiaro per l utente.
+        // mi serve per aprire la sezione del comando 2 
         System.out.println(BOLD + CYAN + "Impostare un obiettivo esistente" + RESET);
         System.out.println("Inserisci i dati richiesti per creare la prenotazione.");
     }
 
     public void printGoalNotFound(int goalId) {
-        // mi serve per segnalare in modo esplicito quando l id obiettivo non esiste nel sistema.
+        // mi serve per segnalare quando l'id obiettivo non esiste nel sistema
         System.out.println("Operazione annullata: obiettivo con ID " + goalId + " non trovato.");
     }
 
     public void printGoalNotAvailable(Goal goal) {
-        // mi serve per bloccare prenotazioni duplicate su obiettivi gia non disponibili.
+        // mi serve per bloccare prenotazioni duplicate su obiettivi gia non disponibili
         System.out.println("Operazione annullata: obiettivo con ID " + goal.id() + " gia non disponibile.");
     }
 
     public void printUserNotFound(int userId) {
-        // mi serve per segnalare in modo esplicito quando l id utente non esiste nel sistema.
+        // mi serve per segnalare quando l'id utente non esiste nel sistema
         System.out.println("Operazione annullata: utente con ID " + userId + " non trovato.");
     }
 
     public void printBookingCreated(Booking booking, Goal goal, User user) {
-        // mi serve per confermare all utente che la prenotazione e stata creata correttamente.
+        // mi serve per confermare all'utente che la prenotazione è stata creata correttamente
         System.out.println(BOLD + GREEN + "Prenotazione creata con successo." + RESET);
         System.out.println("- ID Prenotazione: " + booking.id());
         System.out.println("- ID Obiettivo: " + goal.id() + " (" + goal.nome() + ")");
@@ -126,18 +126,18 @@ public class ConsoleUi {
     }
 
     public void printCancelBookingHeader() {
-        // mi serve per aprire la sezione del comando 3 con contesto chiaro per l utente.
+        // mi serve per aprire la sezione del comando 3 con contesto chiaro per l'utente
         System.out.println(BOLD + CYAN + "Disdire la prenotazione di un obiettivo" + RESET);
         System.out.println("Inserisci l ID prenotazione da cancellare.");
     }
 
     public void printBookingNotFound(int bookingId) {
-        // mi serve per segnalare quando l id prenotazione inserito non esiste nel sistema.
+        // mi serve per segnalare quando l'id prenotazione inserito non esiste nel sistema
         System.out.println("Operazione annullata: prenotazione con ID " + bookingId + " non trovata.");
     }
 
     public void printBookingCancelled(Booking booking, Goal goal) {
-        // mi serve per confermare la cancellazione e l aggiornamento disponibilita obiettivo.
+        // mi serve per confermare la cancellazione e l'aggiornamento disponibilita obiettivo
         System.out.println(BOLD + GREEN + "Prenotazione cancellata con successo." + RESET);
         System.out.println("- ID Prenotazione rimossa: " + booking.id());
         System.out.println("- ID Obiettivo: " + goal.id() + " (" + goal.nome() + ")");
@@ -145,18 +145,18 @@ public class ConsoleUi {
     }
 
     public void printAddUserHeader() {
-        // mi serve per aprire la sezione del comando 4 con istruzioni sintetiche per l inserimento utente.
+        // mi serve per aprire la sezione del comando 4 con istruzioni sintetiche per l'inserimento utente
         System.out.println(BOLD + CYAN + "Aggiungere nuovo utente" + RESET);
         System.out.println("Inserisci nome, cognome, data di nascita, indirizzo e documento ID.");
     }
 
     public void printUserDocumentAlreadyUsed(String documentId) {
-        // mi serve per bloccare la creazione di utenti duplicati sul campo documento id.
+        // mi serve per bloccare la creazione di utenti duplicati sul campo documento id
         System.out.println("Operazione annullata: documento ID " + documentId + " gia presente nel sistema.");
     }
 
     public void printUserCreated(User user) {
-        // mi serve per confermare la creazione utente con i principali dati salvati.
+        // mi serve per confermare la creazione utente con i principali dati salvati
         System.out.println(BOLD + GREEN + "Utente creato con successo." + RESET);
         System.out.println("- ID Utente: " + user.id());
         System.out.println("- Nome: " + user.nome());
@@ -167,7 +167,7 @@ public class ConsoleUi {
     }
 
     public void printExportAvailableGoalsHeader() {
-        // mi serve per aprire la sezione del comando 5 con contesto chiaro per l utente.
+        // mi serve per aprire la sezione del comando 5 
         System.out.println(BOLD + CYAN + "Esportare un file con gli obiettivi disponibili" + RESET);
     }
 
@@ -179,71 +179,71 @@ public class ConsoleUi {
     }
 
     public void printExportNoAvailableGoalsNotice() {
-        // mi serve per avvisare che non c erano obiettivi disponibili, ma il file viene creato con solo header.
+        // mi serve per avvisare che non c'erano obiettivi disponibili, ma il file viene creato con solo header
         System.out.println("Nessun obiettivo disponibile trovato: il file export contiene solo l intestazione.");
     }
 
     public void printDataPersistenceSuccess() {
-        // mi serve per confermare che le modifiche in memoria sono state salvate correttamente sui file csv.
+        // mi serve per confermare che le modifiche in memoria sono state salvate correttamente sui file csv
         System.out.println("Dati salvati su file csv.");
     }
 
     public void printDataPersistenceError(String errorMessage) {
-        // mi serve per segnalare un errore di salvataggio con un messaggio comprensibile.
+        // mi serve per segnalare un errore di salvataggio con un messaggio 
         System.out.println("Errore salvataggio csv: " + errorMessage);
     }
 
     public void printDataPersistenceWarning() {
-        // mi serve per avvisare che la modifica e stata applicata in memoria ma non scritta su file.
+        // mi serve per avvisare che la modifica è stata applicata in memoria ma non scritta su file
         System.out.println("Attenzione: modifica applicata in memoria ma non persistita su file.");
     }
 
     public void printExitMessage() {
-        // mi serve per mostrare un messaggio di chiusura quando l utente sceglie il comando 0.
+        // mi serve per mostrare un messaggio quando l'utente sceglie il comando 0
         System.out.println(BOLD + "Uscita in corso. A presto." + RESET);
     }
 
     public void printUnexpectedCommand() {
-        // mi serve per gestire eventuali casi non previsti senza interrompere il flusso del programma.
+        // mi serve per gestire eventuali casi non previsti senza interrompere il flusso del programma
         System.out.println("Comando inatteso: il menu continua in sicurezza.");
     }
 
     private String buildSeparator(int[] columnWidths) {
-        // mi serve per creare la linea orizzontale della tabella in base alle larghezze colonne.
+        // mi serve per creare la linea orizzontale della tabella in base alle larghezze colonne
         StringBuilder separatorBuilder = new StringBuilder("+");
 
-        // mi serve per aggiungere un blocco tratteggiato per ogni colonna mantenendo lo stesso formato.
+        // mi serve per aggiungere un blocco tratteggiato per ogni colonna mantenendo lo stesso formato
         for (int width : columnWidths) {
             separatorBuilder.append("-".repeat(width + 2)).append("+");
         }
 
-        // mi serve per restituire la stringa separatrice pronta per la stampa.
+        // mi serve per restituire la stringa separatrice 
         return separatorBuilder.toString();
     }
 
     private String buildRow(String[] values, int[] columnWidths) {
-        // mi serve per costruire una riga tabellare allineata con celle a larghezza fissa.
+        // mi serve per costruire una riga tabellare allineata con celle a larghezza fissa
         StringBuilder rowBuilder = new StringBuilder("|");
 
-        // mi serve per inserire ogni valore nel proprio spazio evitando fuoriuscite visive.
+        // mi serve per inserire ogni valore nel proprio spazio evitando fuoriuscite visive
         for (int index = 0; index < values.length; index++) {
             rowBuilder.append(" ").append(fitCell(values[index], columnWidths[index])).append(" |");
         }
 
-        // mi serve per restituire la riga completa pronta da stampare in console.
+        // mi serve per restituire la riga completa pronta da stampare in console
         return rowBuilder.toString();
     }
 
     private String fitCell(String value, int width) {
-        // mi serve per normalizzare i valori null e garantire sempre una stringa valida.
+        // mi serve per normalizzare i valori null e garantire sempre una stringa valida
         String safeValue = value == null ? "" : value.trim();
 
-        // mi serve per troncare i testi troppo lunghi e mantenere la tabella leggibile.
+        // mi serve per troncare i testi troppo lunghi e mantenere la tabella leggibile
         if (safeValue.length() > width) {
             return safeValue.substring(0, Math.max(0, width - 3)) + "...";
         }
 
-        // mi serve per allineare a sinistra i valori corti usando padding a spazi.
+        // mi serve per allineare a sinistra i valori corti usando padding a spazi
         return String.format("%-" + width + "s", safeValue);
     }
 }

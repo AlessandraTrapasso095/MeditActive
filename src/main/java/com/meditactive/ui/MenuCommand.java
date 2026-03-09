@@ -1,4 +1,4 @@
-/* questo file mi serve per rappresentare i comandi del menu in modo tipizzato e riusabile */
+/* serve per rappresentare i comandi del menu */
 package com.meditactive.ui;
 
 import java.util.Arrays;
@@ -15,25 +15,25 @@ public enum MenuCommand {
     private final String description;
 
     MenuCommand(int code, String description) {
-        // mi serve per salvare il numero comando associato all enum.
+        // salva il numero comando associato all'enum
         this.code = code;
 
-        // mi serve per salvare la descrizione testuale del comando.
+        // salva la descrizione testuale del comando
         this.description = description;
     }
 
     public int code() {
-        // mi serve per leggere il codice numerico del comando dove mi serve fare confronti.
+        // legge il codice numerico del comando dove mi serve fare confronti
         return code;
     }
 
     public String description() {
-        // mi serve per leggere la descrizione del comando nelle schermate console.
+        // legge la descrizione del comando nelle schermate console
         return description;
     }
 
     public static MenuCommand fromCode(int inputCode) {
-        // mi serve per convertire un numero digitato dall utente in un comando valido del sistema.
+        // converte un numero digitato dall'utente in un comando valido del sistema
         return Arrays.stream(values())
                 .filter(command -> command.code == inputCode)
                 .findFirst()

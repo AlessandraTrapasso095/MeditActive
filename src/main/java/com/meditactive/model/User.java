@@ -1,4 +1,4 @@
-/* questo file mi serve per rappresentare in memoria un utente letto dal file utenti.csv */
+/* serve per rappresentare in memoria un utente letto dal file utenti.csv */
 package com.meditactive.model;
 
 import com.meditactive.service.DateParser;
@@ -15,12 +15,12 @@ public record User(
 ) {
 
     public static User fromCsv(String[] columns) {
-        // mi serve per validare il numero minimo di colonne richieste dal csv utenti.
+        // valida il numero minimo di colonne richieste dal csv utenti
         if (columns.length < 6) {
             throw new IllegalArgumentException("Riga utenti non valida: colonne insufficienti");
         }
 
-        // mi serve per trasformare la riga csv in un oggetto User pronto da usare nel programma.
+        //trasforma la riga csv in un oggetto User 
         return new User(
                 Integer.parseInt(columns[0].trim()),
                 columns[1].trim(),

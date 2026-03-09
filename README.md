@@ -1,7 +1,6 @@
-<!-- questo file mi serve per spiegare in modo completo come configurare, compilare, eseguire e valutare il progetto MeditActive -->
 # MeditActive CLI (Java)
 
-Applicazione backend **Java da terminale (CLI)** per gestire obiettivi di meditazione, utenti e prenotazioni, sviluppata in stile Start2Impact.
+Applicazione backend **Java da terminale (CLI)** per gestire obiettivi di meditazione, utenti e prenotazioni.
 
 ## Obiettivo del progetto
 MeditActive aiuta gli utenti a:
@@ -89,25 +88,8 @@ Contenuto export:
 - `com.meditactive.service` servizi tecnici (lettura/scrittura CSV, parser date, export)
 - `com.meditactive.ui` gestione input/output terminale e ciclo menu
 
-## Note GitHub / consegna
-Nel repository vanno inclusi:
-- codice sorgente;
-- file CSV forniti e usati dall'app;
-- README.
+## GitHub 
+- Repository: `https://github.com/AlessandraTrapasso095/MeditActive.git`
 
-Nel repository **non** vanno inclusi:
-- file compilati `.class`;
-- file `.jar` generati;
-- cartella `target/`.
-- cartella `exports/` (file runtime generati dal comando 5).
+## Autore: Alessandra Trapasso 👩
 
-## Stato funzionalità
-Requisiti core implementati:
-- caricamento CSV allo startup;
-- menu CLI persistente fino a uscita;
-- visualizzazione obiettivi;
-- impostazione obiettivo;
-- disdetta prenotazione;
-- aggiunta utente;
-- export obiettivi disponibili;
-- persistenza modifiche su CSV.
