@@ -11,7 +11,10 @@ import java.util.function.Function;
 
 public class CsvTableReader {
 
-    private static final String DELIMITER = ";";
+    private static final char DELIMITER = ';';
+    private static final char DOUBLE_QUOTE = '"';
+    private static final char CARRIAGE_RETURN = '\r';
+    private static final char NEW_LINE = '\n';
 
     public <T> List<T> readTable(String filePath, Function<String[], T> rowMapper) {
         // delega alla versione completa tenendo la chiamata semplice nei casi standard
@@ -30,12 +33,12 @@ public class CsvTableReader {
 
         // serve per aprire il file e garantire la chiusura automatica della risorsa
         try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String line;
-
             // per leggere il file riga per riga fino alla fine
-            while ((line = reader.readLine()) != null) {
+            for (String[] rawColumns : parseCsvRecords(reader)) {
+                String[] columns = normalizeColumns(rawColumns);
+
                 // per ignorare righe vuote o righe commentate che iniziano con #
-                if (line.isBlank() || line.trim().startsWith("#")) {
+                if (isIgnorableRecord(columns)) {
                     continue;
                 }
 
@@ -44,9 +47,6 @@ public class CsvTableReader {
                     headerAlreadySkipped = true;
                     continue;
                 }
-
-                // per separare le colonne con il delimitatore ; mantenendo anche eventuali campi vuoti
-                String[] columns = line.split(DELIMITER, -1);
 
                 // serve per mappare la riga csv in un oggetto dominio e salvarlo in lista
                 rows.add(rowMapper.apply(columns));
@@ -58,5 +58,110 @@ public class CsvTableReader {
 
         // serve per restituire la lista finale con i dati caricati in memoria
         return rows;
+    }
+
+    private List<String[]> parseCsvRecords(BufferedReader reader) throws IOException {
+        List<String[]> records = new ArrayList<>();
+        List<String> currentRecord = new ArrayList<>();
+        StringBuilder currentField = new StringBuilder();
+        boolean insideQuotes = false;
+        int nextCharCode;
+
+        while ((nextCharCode = reader.read()) != -1) {
+            char currentChar = (char) nextCharCode;
+
+            if (currentChar == DOUBLE_QUOTE) {
+                if (insideQuotes) {
+                    reader.mark(1);
+                    int lookAheadCode = reader.read();
+                    if (lookAheadCode == DOUBLE_QUOTE) {
+                        currentField.append(DOUBLE_QUOTE);
+                    } else {
+                        insideQuotes = false;
+                        if (lookAheadCode != -1) {
+                            reader.reset();
+                        }
+                    }
+                } else {
+                    insideQuotes = true;
+                }
+                continue;
+            }
+
+            if (currentChar == DELIMITER && !insideQuotes) {
+                currentRecord.add(currentField.toString());
+                currentField.setLength(0);
+                continue;
+            }
+
+            if ((currentChar == NEW_LINE || currentChar == CARRIAGE_RETURN) && !insideQuotes) {
+                if (currentChar == CARRIAGE_RETURN) {
+                    reader.mark(1);
+                    int lookAheadCode = reader.read();
+                    if (lookAheadCode != NEW_LINE && lookAheadCode != -1) {
+                        reader.reset();
+                    }
+                }
+
+                currentRecord.add(currentField.toString());
+                currentField.setLength(0);
+                records.add(currentRecord.toArray(new String[0]));
+                currentRecord = new ArrayList<>();
+                continue;
+            }
+
+            currentField.append(currentChar);
+        }
+
+        if (insideQuotes) {
+            throw new IllegalStateException("CSV non valido: virgolette non bilanciate");
+        }
+
+        if (currentField.length() > 0 || !currentRecord.isEmpty()) {
+            currentRecord.add(currentField.toString());
+            records.add(currentRecord.toArray(new String[0]));
+        }
+
+        return records;
+    }
+
+    private String[] normalizeColumns(String[] rawColumns) {
+        if (rawColumns.length == 0) {
+            return rawColumns;
+        }
+
+        String[] normalizedColumns = rawColumns.clone();
+        normalizedColumns[0] = stripBom(normalizedColumns[0]);
+        return normalizedColumns;
+    }
+
+    private boolean isIgnorableRecord(String[] columns) {
+        if (columns.length == 0) {
+            return true;
+        }
+
+        String firstColumn = columns[0] == null ? "" : columns[0].trim();
+        if (firstColumn.startsWith("#")) {
+            return true;
+        }
+
+        for (String column : columns) {
+            if (column != null && !column.trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String stripBom(String value) {
+        if (value == null || value.isEmpty()) {
+            return value == null ? "" : value;
+        }
+
+        if (value.charAt(0) == '\uFEFF') {
+            return value.substring(1);
+        }
+
+        return value;
     }
 }
